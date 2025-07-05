@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --light-gray: #f5f7fa;
+            --dark: #34495e;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #95a5a6;
+            --border: #e0e6ed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .header-content h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-content p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h3 {
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .card-badge {
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .info-list {
+            list-style: none;
+        }
+        
+        .info-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: var(--dark);
+            flex: 1;
+        }
+        
+        .info-value {
+            color: #666;
+            flex: 2;
+            text-align: right;
+        }
+        
+        .medical-value {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-normal {
+            background-color: var(--success);
+        }
+        
+        .status-warning {
+            background-color: var(--warning);
+        }
+        
+        .status-alert {
+            background-color: var(--danger);
+        }
+        
+        .medications-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .medication-pill {
+            background-color: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--gray);
+            font-size: 13px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-buttons {
+                margin-top: 15px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-list li {
+                flex-direction: column;
+            }
+            
+            .info-value {
+                text-align: left;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="header-content">
+                <h2>Welcome, <span th:text="${patientPersonal.name}">Patient</span></h2>
+                <p>Your health information dashboard</p>
+            </div>
+            <div class="header-buttons">
+                <a href="/patient/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Personal Information</h3>
+                    <span class="card-badge">Profile</span>
+                </div>
+                <div class="card-body">
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Age</span>
+                            <span class="info-value" th:text="${patientPersonal.age}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Gender</span>
+                            <span class="info-value" th:text="${patientPersonal.gender}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Contact</span>
+                            <span class="info-value" th:text="${patientPersonal.contact}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Address</span>
+                            <span class="info-value" th:text="${patientPersonal.address}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Emergency Contact</span>
+                            <span class="info-value" th:text="${patientPersonal.emergencyContact}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Blood Group</span>
+                            <span class="info-value" th:text="${patientPersonal.bloodGroup}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Allergies</span>
+                            <span class="info-value" th:text="${patientPersonal.allergies}">--</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Medical Information</h3>
+                    <span class="card-badge">Health Data</span>
+                </div>
+                <div class="card-body">
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Blood Pressure</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator" th:classappend="${patientMedical.bloodPressure.contains('120/80') ? 'status-normal' : 'status-warning'}"></span>
+                                <span th:text="${patientMedical.bloodPressure}">--</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="info-label">Sugar Level</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator status-normal"></span>
+                                <span th:text="${patientMedical.sugarLevel}">--</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="info-label">Hemoglobin</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator status-normal"></span>
+                                <span th:text="${patientMedical.hemoglobin}">--</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="info-label">Cholesterol</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator status-warning"></span>
+                                <span th:text="${patientMedical.cholesterol}">--</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="info-label">Heart Rate</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator status-normal"></span>
+                                <span th:text="${patientMedical.heartRate}">--</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="info-label">Oxygen Level</span>
+                            <span class="info-value medical-value">
+                                <span class="status-indicator status-normal"></span>
+                                <span th:text="${patientMedical.oxygenLevel}">--</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Treatment Information</h3>
+                    <span class="card-badge">Clinical</span>
+                </div>
+                <div class="card-body">
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Diagnosis</span>
+                            <span class="info-value" th:text="${patientMedical.diagnosis}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">ICD-10 Code</span>
+                            <span class="info-value" th:text="${patientMedical.icd10Code}">--</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Medications</span>
+                            <div class="info-value medications-list">
+                                <th:block th:if="${patientMedical.medications != null && !patientMedical.medications.isEmpty()}">
+                                    <span th:each="med : ${#strings.arraySplit(patientMedical.medications, ',')}" class="medication-pill" th:text="${med}">Med</span>
+                                </th:block>
+                                <span th:if="${patientMedical.medications == null || patientMedical.medications.isEmpty()}">None prescribed</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Last updated: <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}">01 Jan 2025</span></p>
+            <p>For any medical emergencies, please call our 24/7 helpline: <strong>1-800-HOSPITAL</strong></p>
+        </div>
+    </div>
+</body>
+</html>

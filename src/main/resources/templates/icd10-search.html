@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ICD-10 Search</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h2>ICD-10 Code Search</h2>
+
+    <form th:action="@{/patient/search-icd10}" method="get">
+        <input type="text" name="query" placeholder="Enter disease name..." required />
+        <button type="submit">Search</button>
+    </form>
+
+    <h3>Results</h3>
+    <table border="1">
+        <tr>
+            <th>ICD-10 Code</th>
+            <th>Description</th>
+        </tr>
+        <tr th:each="result : ${results}">
+            <td th:text="${result.code}"></td>
+            <td th:text="${result.description}"></td>
+        </tr>
+    </table>
+</body>
+</html>

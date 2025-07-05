@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Patient</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    
+    <style>
+        :root {
+            --primary: #4c9aff;
+            --primary-light: #e0edff;
+            --primary-dark: #3785e5;
+            --secondary: #82c0cc;
+            --dark: #2f4858;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f6f9ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 30px 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 4px;
+            background: var(--primary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h3 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .form-section {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-col {
+            flex: 1 0 calc(50% - 20px);
+            margin: 0 10px 20px;
+            min-width: 250px;
+        }
+        
+        .form-col.full {
+            flex: 1 0 calc(100% - 20px);
+        }
+        
+        .form-group {
+            position: relative;
+            margin-bottom: 5px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: white;
+            color: var(--dark);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 154, 255, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 12px) center;
+            padding-right: 40px;
+        }
+        
+        .icd-group {
+            display: flex;
+        }
+        
+        .icd-group input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right: none;
+        }
+        
+        .icd-group button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .icd-group button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 13px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 4px 10px rgba(76, 154, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 154, 255, 0.4);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        /* Input field validation styles */
+        input:required:invalid,
+        select:required:invalid,
+        textarea:required:invalid {
+            border-color: var(--danger);
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--gray);
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+            
+            .form-section {
+                padding: 15px;
+            }
+            
+            .form-col {
+                flex: 1 0 calc(100% - 20px);
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Add New Patient</h2>
+            
+            <form th:action="@{/patient/add}" method="post">
+                <div class="form-section">
+                    <h3><i class="fas fa-user-circle"></i> Personal Information</h3>
+                    
+                    <div th:object="${patientPersonal}">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="name">Full Name</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" th:field="*{name}" id="name" placeholder="Enter patient name" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-venus-mars"></i>
+                                        <select th:field="*{gender}" id="gender" required>
+                                            <option value="">Select gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="age">Age</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-birthday-cake"></i>
+                                        <input type="text" th:field="*{Age}" id="age" placeholder="Patient age" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="bloodGroup">Blood Group</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-tint"></i>
+                                        <input type="text" th:field="*{bloodGroup}" id="bloodGroup" placeholder="e.g. O+, AB-" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="contact">
+                                        Contact Number
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                        <input type="text" th:field="*{contact}" id="contact" placeholder="Contact number" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="emergencyContact">Emergency Contact</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-ambulance"></i>
+                                        <input type="text" th:field="*{emergencyContact}" id="emergencyContact" placeholder="Emergency contact" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="allergies">Known Allergies</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <input type="text" th:field="*{allergies}" id="allergies" placeholder="Allergies (if any)" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-home"></i>
+                                        <input type="text" th:field="*{address}" id="address" placeholder="Patient address" required />
+                                    </div>
+                                </div>
+                                
+                                 <div class="form-col">
+                                <div class="form-group">
+                                    <label for="address">Email</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-home"></i>
+                                        <input type="text" th:field="*{email}" id="email" placeholder="Email" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-heartbeat"></i> Medical Information</h3>
+                    
+                    <div th:object="${patientMedical}">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="diagnosis">Diagnosis</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-stethoscope"></i>
+                                        <input type="text" th:field="*{diagnosis}" id="diagnosis" placeholder="e.g. Hypertension, Diabetes" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="icd10Code">ICD-10 Code</label>
+                                    <div class="icd-group">
+                                        <div class="input-icon" style="flex: 1;">
+                                            <i class="fas fa-hashtag"></i>
+                                            <input type="text" th:field="*{icd10Code}" id="icd10Code" placeholder="ICD-10 Code" readonly />
+                                        </div>
+                                        <button type="button" onclick="fetchICDCode()">Get Code</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="bloodPressure">Blood Pressure (mmHg)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-heart"></i>
+                                        <input type="text" th:field="*{bloodPressure}" id="bloodPressure" placeholder="e.g. 120/80" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="heartRate">Heart Rate (BPM)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-heartbeat"></i>
+                                        <input type="text" th:field="*{heartRate}" id="heartRate" placeholder="e.g. 72" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="sugarLevel">Blood Sugar (mg/dL)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <input type="text" th:field="*{sugarLevel}" id="sugarLevel" placeholder="e.g. 90" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="oxygenLevel">Oxygen Level (%)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-lungs"></i>
+                                        <input type="text" th:field="*{oxygenLevel}" id="oxygenLevel" placeholder="e.g. 98" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="hemoglobin">Hemoglobin (g/dL)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-vial"></i>
+                                        <input type="text" th:field="*{hemoglobin}" id="hemoglobin" placeholder="e.g. 14.5" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="cholesterol">Cholesterol (mg/dL)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-tablets"></i>
+                                        <input type="text" th:field="*{cholesterol}" id="cholesterol" placeholder="e.g. 180" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col full">
+                                <div class="form-group">
+                                    <label for="medications">Current Medications</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-pills"></i>
+                                        <input type="text" th:field="*{medications}" id="medications" placeholder="List all current medications" required />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col full">
+                                <div class="form-group">
+                                    <label for="notes">Additional Notes</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-sticky-note"></i>
+                                        <textarea th:field="*{notes}" id="notes" rows="4" placeholder="Add any additional information here" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Button Row -->
+<div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+    <!-- Save Button -->
+    <button type="submit" class="btn" style="padding: 13px 30px;">
+        <i class="fas fa-save"></i> Save Patient
+    </button>
+
+    <!-- Back Button -->
+    <a th:href="@{/doctor/dashboard}" class="btn btn-outline-secondary" style="padding: 13px 30px; display: inline-flex; align-items: center; justify-content: center;">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+                
+            </form>
+        </div>
+    </div>
+
+    <script>
+    
+    
+    // Auto-append units on blur
+    function appendUnitIfMissing(fieldId, unit) {
+        const field = document.getElementById(fieldId);
+        field.addEventListener('blur', function () {
+            const value = field.value.trim();
+            if (value && !value.includes(unit)) {
+                field.value = value + ' ' + unit;
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        appendUnitIfMissing("bloodPressure", "mmHg");
+        appendUnitIfMissing("heartRate", "BPM");
+        appendUnitIfMissing("sugarLevel", "mg/dL");
+        appendUnitIfMissing("oxygenLevel", "%");
+        appendUnitIfMissing("hemoglobin", "g/dL");
+        appendUnitIfMissing("cholesterol", "mg/dL");
+    });
+    
+    
+    
+        function fetchICDCode() {
+            var diagnosisInput = document.getElementById("diagnosis");
+            var icd10CodeInput = document.getElementById("icd10Code");
+
+            if (!diagnosisInput) {
+                alert("Diagnosis input field is missing.");
+                return;
+            }
+
+            var diagnosis = diagnosisInput.value.trim();
+
+            if (diagnosis === "") {
+                alert("Please enter a diagnosis first.");
+                return;
+            }
+
+            fetch("/icd10/getCode?diagnosis=" + encodeURIComponent(diagnosis))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.icd10Code && data.icd10Code !== "ICD Code Not Found") {
+                        icd10CodeInput.value = data.icd10Code;
+                    } else {
+                        alert("ICD-10 code not found for this diagnosis.");
+                        icd10CodeInput.value = "";
+                    }
+                })
+                .catch(error => {
+                    alert("Failed to fetch ICD-10 code. Please check the server logs.");
+                    console.error("ICD-10 Fetch Error:", error);
+                });
+        }
+    </script>
+</body>
+</html>

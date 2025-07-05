@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    
+    <style>
+        :root {
+            --primary: #4d94ff;
+            --primary-light: #e6f0ff;
+            --secondary: #6ac2c7;
+            --text-dark: #2d3748;
+            --text-light: #4a5568;
+            --text-muted: #718096;
+            --success: #48bb78;
+            --danger: #f56565;
+            --warning: #ecc94b;
+            --background: #f7fafc;
+            --white: #ffffff;
+            --gray-100: #f7fafc;
+            --gray-200: #edf2f7;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f0f7ff 0%, #f8faff 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 30px 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+        }
+        
+        .patient-card {
+            background: var(--white);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .patient-header {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 30px;
+            color: white;
+            position: relative;
+        }
+        
+        .patient-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .patient-id {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .patient-basic-info {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .basic-info-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .basic-info-item i {
+            margin-right: 8px;
+        }
+        
+        .patient-body {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .detail-section {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .critical-value {
+            color: var(--danger);
+        }
+        
+        .normal-value {
+            color: var(--success);
+        }
+        
+        .vital-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .vital-item {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            padding: 15px;
+            min-width: 120px;
+            flex: 1;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .vital-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .vital-value {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .vital-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .back-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(77, 148, 255, 0.3);
+        }
+        
+        .back-button:hover {
+            background: #3a85ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(77, 148, 255, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .patient-header {
+                padding: 20px;
+            }
+            
+            .patient-body {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vital-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="patient-card">
+            <div class="patient-header">
+                <div class="patient-name" th:text="${patientPersonal.name}">John Doe</div>
+                <div class="patient-id">Patient ID: <span th:text="${patientPersonal.patientId}">12345</span></div>
+                
+                <div class="patient-basic-info">
+                    <div class="basic-info-item">
+                        <i class="fas fa-birthday-cake"></i> 
+                        <span th:text="${patientPersonal.age + ' years'}">30 years</span>
+                    </div>
+                    
+                    <div class="basic-info-item">
+                        <i class="fas fa-venus-mars"></i> 
+                        <span th:text="${patientPersonal.gender}">Male</span>
+                    </div>
+                    
+                    <div class="basic-info-item">
+                        <i class="fas fa-tint"></i> 
+                        <span th:text="${patientPersonal.bloodGroup}">O+</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="patient-body">
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-user"></i> Personal Information</h3>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Contact Number</span>
+                            <span class="info-value">
+                                <i class="fas fa-phone"></i> 
+                                <span th:text="${patientPersonal.contact}">1234567890</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Emergency Contact</span>
+                            <span class="info-value">
+                                <i class="fas fa-ambulance"></i> 
+                                <span th:text="${patientPersonal.emergencyContact}">9876543210</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Address</span>
+                            <span class="info-value">
+                                <i class="fas fa-home"></i> 
+                                <span th:text="${patientPersonal.address}">123 Main Street</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Allergies</span>
+                            <span class="info-value">
+                                <i class="fas fa-exclamation-circle"></i> 
+                                <span th:text="${patientPersonal.allergies}">None</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-heartbeat"></i> Medical Information</h3>
+                    
+                    <div class="vital-stats">
+                        <div class="vital-item">
+                            <div class="vital-value" th:text="${patientMedical != null ? patientMedical.bloodPressure : 'N/A'}">120/80</div>
+                            <div class="vital-label">Blood Pressure</div>
+                        </div>
+                        
+                        <div class="vital-item">
+                            <div class="vital-value" th:text="${patientMedical != null ? patientMedical.heartRate : 'N/A'}">72</div>
+                            <div class="vital-label">Heart Rate (bpm)</div>
+                        </div>
+                        
+                        <div class="vital-item">
+                            <div class="vital-value" th:text="${patientMedical != null ? patientMedical.oxygenLevel : 'N/A'}">98%</div>
+                            <div class="vital-label">Oxygen Level</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Sugar Level</span>
+                            <span class="info-value">
+                                <i class="fas fa-tachometer-alt"></i> 
+                                <span th:text="${patientMedical != null ? patientMedical.sugarLevel : 'N/A'}">90 mg/dL</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Hemoglobin</span>
+                            <span class="info-value">
+                                <i class="fas fa-vial"></i> 
+                                <span th:text="${patientMedical != null ? patientMedical.hemoglobin : 'N/A'}">13.5</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Cholesterol</span>
+                            <span class="info-value">
+                                <i class="fas fa-chart-line"></i> 
+                                <span th:text="${patientMedical != null ? patientMedical.cholesterol : 'N/A'}">180 mg/dL</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">ICD-10 Code</span>
+                            <span class="info-value">
+                                <i class="fas fa-hashtag"></i> 
+                                <span th:text="${patientMedical != null ? patientMedical.icd10Code : 'Not Assigned'}">A00</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section" th:if="${patientMedical != null && patientMedical.diagnosis != null}">
+                    <h3 class="section-title"><i class="fas fa-stethoscope"></i> Diagnosis & Notes</h3>
+                    
+                    <div class="info-grid">
+                        <div class="info-item" style="grid-column: 1/-1;">
+                            <span class="info-label">Diagnosis</span>
+                            <span class="info-value">
+                                <span th:text="${patientMedical.diagnosis}">Hypertension</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item" style="grid-column: 1/-1;">
+                            <span class="info-label">Medications</span>
+                            <span class="info-value">
+                                <i class="fas fa-pills"></i> 
+                                <span th:text="${patientMedical != null ? patientMedical.medications : 'None prescribed'}">Lisinopril 10mg daily</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-item" style="grid-column: 1/-1;" th:if="${patientMedical != null && patientMedical.notes != null}">
+                            <span class="info-label">Clinical Notes</span>
+                            <span class="info-value">
+                                <span th:text="${patientMedical.notes}">Patient is responding well to treatment.</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/doctor/dashboard" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

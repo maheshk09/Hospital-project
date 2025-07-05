@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .registration-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        .header h2 {
+            font-weight: 600;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .registration-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .login-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .login-link a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        .terms {
+            font-size: 13px;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .divider span {
+            padding: 0 10px;
+            color: var(--gray);
+            font-size: 12px;
+        }
+        
+        .error-message {
+            background-color: #fdecea;
+            border-left: 4px solid var(--danger);
+            color: #a51d0e;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            .registration-container {
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .registration-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="header">
+            <h2>Create Your Patient Account</h2>
+            <p>Join our healthcare portal to manage your appointments and records</p>
+        </div>
+        
+        <div class="registration-form">
+            <div th:if="${param.error}" class="error-message" th:text="${param.error}"></div>
+            
+            <form th:action="@{/patient/self-register}" method="post" th:object="${patientLogin}">
+            
+             <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" th:field="*{name}" required placeholder="Name" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" th:field="*{age}" required placeholder="Age" >
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" th:field="*{email}" required placeholder="your@email.com" autocomplete="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <input type="password" id="password" th:field="*{password}" required placeholder="••••••••" autocomplete="new-password">
+                    <div class="password-requirements">
+                        Password must be at least 8 characters with letters and numbers
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">Create Account</button>
+                
+                <div class="terms">
+                    By registering, you agree to our Terms of Service and Privacy Policy regarding the handling of your medical information.
+                </div>
+            </form>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="login-link">
+                Already have an account? <a th:href="@{/patient/login}">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
